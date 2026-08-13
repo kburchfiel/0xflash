@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://tjvphtg5jilm"]
+
+[node name="Main" type="Main" unique_id=1185656381]
+
+[node name="Response_Window" type="TextEdit" parent="." unique_id=1389945311]
+offset_left = 98.0
+offset_top = 298.0
+offset_right = 1058.0
+offset_bottom = 838.0
+
+[node name="Message_Window_Background" type="ColorRect" parent="." unique_id=1762562956]
+offset_left = 100.0
+offset_top = 50.0
+offset_right = 1060.0
+offset_bottom = 250.0
+color = Color(0, 0, 0, 1)
+
+[node name="Message_Window" type="RichTextLabel" parent="." unique_id=1558944075]
+custom_minimum_size = Vector2(960, 200)
+offset_left = 100.0
+offset_top = 50.0
+offset_right = 1060.0
+offset_bottom = 250.0
