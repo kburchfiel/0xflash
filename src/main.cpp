@@ -8,90 +8,110 @@ Main::~Main() {}
 
 void Main::_ready() {
 
-UtilityFunctions::print("Main::_ready() just got called.");
-get_node<RichTextLabel>("Message_Window")->set_text("Enter the \
-decimal equivalent of the hexadecimal number C7.");
+  UtilityFunctions::print("Main::_ready() just got called.");
+
+  // Seeding our random-number generator:
+
+  double current_unix_time = Time::get_singleton()->get_unix_time_from_system();
+  UtilityFunctions::print("Current Unix time:", current_unix_time);
+  UtilityFunctions::print("Current Unix time as int:",
+                          uint64_t(current_unix_time));
+
+  rng->set_seed(uint64_t(current_unix_time));
+  // Converting Unix time to a uint64_t because this is what
+  // set_seed is able to take.
 }
 
-void Main::_process(double delta) 
-{
-// Retrieving the current contents of the response window:
-// (See godot-cpp/gen/include/godot_cpp/classes/text_edit.hpp)
-String player_response = get_node<TextEdit>("Response_Window")->get_text();
-if (player_response == "199")
-{UtilityFunctions::print("You win!");
-// Now that a successful response has been entered, the screen
-// should be cleared:
-get_node<TextEdit>("Response_Window")->clear();
+void Main::run_hex_to_int_test() {
+  UtilityFunctions::print("Starting function.");
 
-// Storing these results within a dictionary:
-// Another approach would be 
+  int int_answer = rng->randi_range(0, 255); // Corresponds to 0x0-0xFF
+  UtilityFunctions::print(int_answer);
+  can_begin_new_test = true;
 
-// Note: Initializing this dictionary and adding items to it took
-// a LOT of trial and error! (This was before I realized that
-// the my_test.cpp file within the godot-cpp library, available at
-// https://github.com/godotengine/godot-cpp/blob/master/test/src/my_test.cpp ,
-// shows how to implement a dictionary!)
+  // Converting this number to a hexadecimal value:
+  // (I stumbled upon this function after trying (and failing) to use
+  // String::format to convert the integer to a hexadecimal value.
+  // Note: you can add 'true' as a third argument in order to
+  // capitalize hexadecimal values.
+  godot::String int_0x = godot::String::num_int64(int_answer, 16);
+  UtilityFunctions::print(int_0x);
+  get_node<RichTextLabel>("Message_Window")
+      ->set_text("Enter the \
+decimal equivalent of the hexadecimal number " +
+                 int_0x + ".");
 
-// Alternatively, you could use individual TypedDictionary objects,
-// one for each dictionary entry, to store your results.
-// The keys would be test numbers and the values would be your
-// result values (e.g. test number, time, number in Base 16 
-// and Base 10, etc.)
+  while (true) {
+    // Retrieving the current contents of the response window:
+    // (See godot-cpp/gen/include/godot_cpp/classes/text_edit.hpp)
+    String player_response = get_node<LineEdit>("Response_Window")->get_text();
 
-// Or, you could even try using a std::vector of std::map entries with
-// std::string keys and std::variant<int, string, etc.> values
-// to store your results.
+    if (player_response.to_int() == int_answer) {
+      UtilityFunctions::print("You win!");
+      // Now that a successful response has been entered, the screen
+      // should be cleared:
+      get_node<LineEdit>("Response_Window")->clear();
 
-// Dictionary results_dict {};
+      // The my_test.cpp file within the godot-cpp library, available at
+      // https://github.com/godotengine/godot-cpp/blob/master/test/src/my_test.cpp
+      // , shows how to implement a dictionary!)
 
-// The following two approaches work, but they're unnecessarily
-// complex:
-// results_dict[String("Test_Number")] = Variant(test_number);
-// results_dict[String("Time")] = Variant(500);
-// results_dict[String("B16")] = Variant("C7");
-// results_dict[String("B10")] = Variant("199");
+      // Alternatively, you could use individual TypedDictionary objects,
+      // one for each dictionary entry, to store your results.
+      // The keys would be test numbers and the values would be your
+      // result values (e.g. test number, time, number in Base 16
+      // and Base 10, etc.)
 
-// results_dict[String("Test_Number")] = test_number;
-// results_dict[String("Time")] = 500;
-// results_dict[String("B16")] = "C7";
-// results_dict[String("B10")] = "199";
+      Dictionary results_dict{};
 
-Dictionary results_dict {};
+      results_dict["Test_Number"] = test_number;
+      results_dict["Time"] =
+          Time::get_singleton()->get_datetime_string_from_system();
+      results_dict["B10"] = int_answer;
+      results_dict["B16"] = int_0x;
 
-results_dict["Test_Number"] = test_number;
-results_dict["Time"] = 500;
-results_dict["B16"] = "C7";
-results_dict["B10"] = "199";
+      // UtilityFunctions::print(results_dict["Test_Number"]);
+      // UtilityFunctions::print(results_dict["Time"]);
+      // UtilityFunctions::print(results_dict["B16"]);
+      // UtilityFunctions::print(results_dict["B10"]);
 
-Dictionary results_dict{{"Test_Number", test_number}, 
-{"Time", 500}, {"B16", "C7"}, {"B10", "199"}};
+      int test_index = test_number - 1;
 
-// UtilityFunctions::print(results_dict["Test_Number"]);
-// UtilityFunctions::print(results_dict["Time"]);
-// UtilityFunctions::print(results_dict["B16"]);
-// UtilityFunctions::print(results_dict["B10"]);
+      // {{String("Time"), 500}, {String("0x"), "C7"},
+      //     {String("Decimal"), 199}, {String("Timestamp"),
+      //     "2026-08-20T225126"}};
 
-int test_index = test_number -1;
+      results_array.append(results_dict);
 
-// {{String("Time"), 500}, {String("0x"), "C7"},
-//     {String("Decimal"), 199}, {String("Timestamp"), "2026-08-20T225126"}};
+      UtilityFunctions::print("Printing array data:");
+      // UtilityFunctions::print(results_array[test_index]);
+      UtilityFunctions::print(results_array[test_index].get("Test_Number"));
+      UtilityFunctions::print(results_array[test_index].get("Time"));
+      UtilityFunctions::print(results_array[test_index].get("B16"));
+      UtilityFunctions::print(results_array[test_index].get("B10"));
 
-results_array.append(results_dict);
+      // For some reason, the following setup just prints out the
+      // ASCII value corresponding to the first letter of the key
+      // (e.g. 84 for 'Time').
+      // UtilityFunctions::print(results_array[0]["Time"]);
 
-UtilityFunctions::print("Printing array data:");
-//UtilityFunctions::print(results_array[test_index]);
-UtilityFunctions::print(results_array[test_index].get("Test_Number"));
-UtilityFunctions::print(results_array[test_index].get("Time"));
-UtilityFunctions::print(results_array[test_index].get("B16"));
-UtilityFunctions::print(results_array[test_index].get("B10"));
-
-// For some reason, the following setup just prints out the
-// ASCII value corresponding to the first letter of the key 
-// (e.g. 84 for 'Time').
-// UtilityFunctions::print(results_array[0]["Time"]);
-
-test_number++;
-
+      test_number++;
+      can_begin_new_test = true;
+      return;
+    }
+  }
 }
+
+void Main::_process(double delta) {
+
+  auto input = Input::get_singleton();
+
+  if ((input->is_action_just_pressed("start_game")) &&
+      (can_begin_new_test == true)) {
+    UtilityFunctions::print("Calling run_hex_to_int_test;");
+    can_begin_new_test = false; // Will prevent process() from
+    // calling this function again until the test has been
+    // completed
+    run_hex_to_int_test();
+  }
 }

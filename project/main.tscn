@@ -2,12 +2,6 @@
 
 [node name="Main" type="Main" unique_id=1185656381]
 
-[node name="Response_Window" type="TextEdit" parent="." unique_id=1389945311]
-offset_left = 98.0
-offset_top = 298.0
-offset_right = 1058.0
-offset_bottom = 838.0
-
 [node name="Message_Window_Background" type="ColorRect" parent="." unique_id=1762562956]
 offset_left = 100.0
 offset_top = 50.0
@@ -21,3 +15,12 @@ offset_left = 100.0
 offset_top = 50.0
 offset_right = 1060.0
 offset_bottom = 250.0
+
+[node name="Response_Window" type="LineEdit" parent="." unique_id=985133991]
+anchors_preset = -1
+anchor_right = 0.05
+anchor_bottom = 0.147
+offset_left = 380.0
+offset_top = 318.0
+offset_right = 684.0
+offset_bottom = 259.24
