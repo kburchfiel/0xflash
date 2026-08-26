@@ -15,6 +15,7 @@ offset_left = 100.0
 offset_top = 50.0
 offset_right = 1060.0
 offset_bottom = 250.0
+theme_override_font_sizes/normal_font_size = 32
 
 [node name="Response_Window" type="LineEdit" parent="." unique_id=985133991]
 anchors_preset = -1
@@ -24,3 +25,4 @@ offset_left = 380.0
 offset_top = 318.0
 offset_right = 684.0
 offset_bottom = 259.24
+theme_override_font_sizes/font_size = 32
