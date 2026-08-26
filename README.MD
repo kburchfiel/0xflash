@@ -18,3 +18,4 @@ Released under the MIT License
 
 1. Consider expanding the game to include certain other math-related tests, such as single-digit x double-digit multiplication.
 
+1. Figure out which additional variables can be made `const`.
