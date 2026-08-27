@@ -11,10 +11,7 @@ Released under the MIT License
 
 ## To-dos (incomplete list)
 
-1. Find a way to save your dictionary entries in .csv format rather than the current pipe-separated format.
-* It looks like the FileAccess::store_csv_line() function within file_access.cpp will be a good option here. 
-
-1. Add buttons, menus, etc. that let the player (1) choose whether to convert from hexadecimal to decimal or the other way around; (2) choose the minimum and maximum decimal-number range (so that, if the A-FF range gets too easy, the player can go up to, say, FFF); and (3) determine how many numbers to enter for each round. 
+1. Add buttons, menus, etc. that let the player (1) choose whether to convert from hexadecimal to decimal or the other way around; (2) choose the minimum and maximum decimal-number range (so that, if the A-FF range gets too easy, the player can go up to, say, FFF); and (3) determine how many numbers to enter for each round. **Then update your results dictionary and results .csv file to store this information (thus making it possible to easily differentiate between different test types).**
 
 1. Consider expanding the game to include certain other math-related tests, such as single-digit x double-digit multiplication.
 
