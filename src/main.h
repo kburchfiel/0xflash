@@ -10,6 +10,7 @@
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/classes/random_number_generator.hpp>
 #include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/variant/packed_string_array.hpp>
 
 
 
@@ -22,6 +23,10 @@ private:
 
 bool test_active = false;
 
+bool print_extra_info = false; // Will allow a number of
+// UtilityFunction::print() calls to execute, thus making it easier
+// to debug issues.
+
 godot::String prompt;
 
 godot::String answer; // Setting this as a string makes it more
@@ -33,7 +38,7 @@ godot::String answer; // Setting this as a string makes it more
 // to export our results to a standalone .csv file.
 
 Array results_array {};
-int test_number = 1; // Will get incremented by 1 after each test.
+int within_round_test_number = 1; // Will get incremented by 1 after each test.
 
 // Creating a new ref-counted RandomNumberGenerator object:
 // (Based on https://docs.godotengine.org/en/stable/engine_details/architecture/object_class.html#refcounted-memory-management )
@@ -72,5 +77,7 @@ void _on_line_edit_text_changed(godot::String player_response);
 // accept that new text.
 
 void end_test();
+
+void save_results();
 
 };
