@@ -113,7 +113,7 @@ if (game_mode == "B16 to B10")
 
 }
 
-else if (game_mode == "B16 (M16) to B10")
+else if (game_mode == "B16 (x16) to B10")
 {// The user will need to enter a base-10 number corresponding to
   // the hexadecimal version of a base-10 number multiplied by 16
   // (32, 128, 240, etc). This will prove to be useful practice
@@ -132,6 +132,16 @@ else if (game_mode == "B10 to B16")
   // a base-16 number.
 
   int random_int = rng->randi_range(num_1_min_val, num_1_max_val);
+  answer = godot::String::num_int64(random_int, 16);
+  prompt = godot::String::num_int64(random_int);
+}
+
+else if (game_mode == "B10 (x16) to B16")
+{
+
+int random_int = rng->randi_range(
+num_1_min_val, num_1_max_val) * 16;
+
   answer = godot::String::num_int64(random_int, 16);
   prompt = godot::String::num_int64(random_int);
 }
@@ -156,7 +166,10 @@ void Main::start_test() {
 // Disabling option buttons, thus preventing the user from 
 // changing them (intentionally or otherwise) while tests are 
 // active:
-for (int i = 0; i < 4; i++)
+
+UtilityFunctions::print("id_game_mode_map_size", id_game_mode_map.size());
+
+for (int i = 0; i < id_game_mode_map.size(); i++)
 {get_node<OptionButton>("GameMode") -> set_item_disabled(i, true);}
 get_node<SpinBox>("Num1Min") -> set_editable(false);
 get_node<SpinBox>("Num1Max") -> set_editable(false);
@@ -560,7 +573,7 @@ void Main::_process(double delta) {
     within_round_test_number = 1;
 
     // Making the option buttons editable again:
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < id_game_mode_map.size(); i++)
 {get_node<OptionButton>("GameMode") -> set_item_disabled(i, false);}
 get_node<SpinBox>("Num1Min") -> set_editable(true);
 get_node<SpinBox>("Num1Max") -> set_editable(true);

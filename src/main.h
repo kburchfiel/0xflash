@@ -66,19 +66,24 @@ godot::String game_mode = "B16 to B10";
 godot::String test_intro = "Enter the decimal equivalent of the \
 hexadecimal number ";
 
-// The following IDs and game modes should match what has been
+// The following indices and game modes should match what has been
 // configured within the editor.
 TypedDictionary<int, godot::String> id_game_mode_map {
 {0, "B16 to B10"},
-{1, "B16 (M16) to B10"},
+{1, "B16 (x16) to B10"},
 {2, "B10 to B16"},
-{3, "Multiplication"}};
+{3, "B10 (x16) to B16"},
+{4, "Multiplication"}
+};
+
 
 TypedDictionary<int, godot::String> id_test_intro_map {
 {0, "Enter the decimal equivalent of the hexadecimal number "},
 {1, "Enter the decimal equivalent of the hexadecimal number "},
 {2, "Enter the hexadecimal equivalent of the decimal number "},
-{3, "Enter the product of "}};
+{3, "Enter the hexadecimal equivalent of the decimal number "},
+{4, "Enter the product of "}
+};
 
 int num_1_min_val = 0;
 int num_1_max_val = 255;

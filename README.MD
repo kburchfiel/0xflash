@@ -16,11 +16,11 @@ Released under the MIT License
 
 1. Converting hexadecimal numbers like 7e to decimal ones like 126
 
-    * (There's also a special mode for converting hexadecimal multiples of 16 to decimal mode, which can prove useful when learning how to quickly convert between these two bases.)
-
 1. Converting decimal numbers to hexadecimal ones
 
 1. Multiplying two numbers
+
+There are also special modes (designated with an (x16) value within the dropdown menu) that allow you to test yourself on multiples of 16, which can prove useful when learning how to quickly convert from a decimal number to a 2-digit hexadecimal number and back. (After all, a 2-digit hexadecimal number, in decimal form, is simply (1) 16 times a number between 0 and 15 plus (2) a value between 0 and 15.)
 
 The game allows you to set the difficulty level for a given mode by determining the smallest- and largest-possible values that will be chosen for each test. 
 
