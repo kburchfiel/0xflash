@@ -4,8 +4,25 @@ void Main::_bind_methods() {
 
   // Note that no parentheses should be added after the function's
   // name in either of its appearances.
-  ClassDB::bind_method(D_METHOD("_on_line_edit_text_changed"),
-                       &Main::_on_line_edit_text_changed);
+  ClassDB::bind_method(D_METHOD("_on_response_window_text_changed"),
+                       &Main::_on_response_window_text_changed);
+
+  ClassDB::bind_method(D_METHOD("_on_game_mode_item_selected"),
+                       &Main::_on_game_mode_item_selected);
+
+  ClassDB::bind_method(D_METHOD("_on_number_1_min_value_changed"),
+                       &Main::_on_number_1_min_value_changed);
+
+  ClassDB::bind_method(D_METHOD("_on_number_1_max_value_changed"),
+                       &Main::_on_number_1_max_value_changed);
+
+  ClassDB::bind_method(D_METHOD("_on_number_2_min_value_changed"),
+                       &Main::_on_number_2_min_value_changed);
+
+  ClassDB::bind_method(D_METHOD("_on_number_2_max_value_changed"),
+                       &Main::_on_number_2_max_value_changed);
+
+                       
 }
 
 Main::Main() {}
@@ -13,6 +30,11 @@ Main::Main() {}
 Main::~Main() {}
 
 void Main::_ready() {
+
+// Disabling the number 2 controls since they won't be needed
+// for our default mode:
+  get_node<SpinBox>("Num2Min") -> set_editable(false);
+  get_node<SpinBox>("Num2Max") -> set_editable(false);
 
   if (print_extra_info == true) {
     UtilityFunctions::print("Main::_ready() just got called.");
@@ -36,8 +58,26 @@ void Main::_ready() {
   // Temp code for debugging:
   // rng->set_seed(0);
 
+  // Connecting signals: (I've found that performing these steps here
+  // is more reliable than doing so within the editor, as 
+  // changes made using the latter method sometimes get lost.)
   get_node<LineEdit>("Response_Window")
-      ->connect("text_changed", Callable(this, "_on_line_edit_text_changed"));
+      ->connect("text_changed", Callable(this, "_on_response_window_text_changed"));
+  
+  get_node<OptionButton>("GameMode")
+      ->connect("item_selected", Callable(this, "_on_game_mode_item_selected"));
+
+  get_node<SpinBox>("Num1Min")
+      ->connect("value_changed", Callable(this, "_on_number_1_min_value_changed"));
+
+   get_node<SpinBox>("Num1Max")
+      ->connect("value_changed", Callable(this, "_on_number_1_max_value_changed"));
+
+   get_node<SpinBox>("Num2Min")
+      ->connect("value_changed", Callable(this, "_on_number_2_min_value_changed"));
+
+   get_node<SpinBox>("Num2Max")
+      ->connect("value_changed", Callable(this, "_on_number_2_max_value_changed"));
 
   // Providing gameplay instructions:
 
@@ -46,7 +86,83 @@ void Main::_ready() {
 response window and then press your space bar. Press q to end a round.");
 }
 
+void Main::generate_prompt_and_answer() {
+
+
+// Our method for retrieving a prompt and corresponding answer
+// will depend on the game mode.
+
+if (game_mode == "B16 to B10") 
+{// The user will need to enter a base-10 number corresponding to
+  // a hexadecimal number.
+
+  int random_int = rng->randi_range(num_1_min_val, num_1_max_val);
+  // The starting and ending values of randi_range do appear
+  // to be inclusive. See:
+  // https://www.reddit.com/r/godot/comments/z792su/can_intrand_range0_5_actually_return_5/
+
+  // Converting the random integer to a hexadecimal value:
+  // (I stumbled upon this function after trying (and failing) to use
+  // String::format to convert the integer to a hexadecimal value.
+  // Note: you can add 'true' as a third argument in order to
+  // capitalize hexadecimal values.
+  prompt = godot::String::num_int64(random_int, 16);
+
+  answer = godot::String::num_int64(random_int);
+
+
+}
+
+else if (game_mode == "B16 (M16) to B10")
+{// The user will need to enter a base-10 number corresponding to
+  // the hexadecimal version of a base-10 number multiplied by 16
+  // (32, 128, 240, etc). This will prove to be useful practice
+  // for calculating the decimal version of 2-digit hexadecimal
+  // numbers (which will consist of a multiple of 16 plus a value
+  // between 0 and 16).
+
+  int random_int = rng->randi_range(
+    num_1_min_val, num_1_max_val) * 16;
+  prompt = godot::String::num_int64(random_int, 16);
+  answer = godot::String::num_int64(random_int);
+}
+
+else if (game_mode == "B10 to B16")
+{// The user will need to enter a hexadecimal number corresponding to
+  // a base-16 number.
+
+  int random_int = rng->randi_range(num_1_min_val, num_1_max_val);
+  answer = godot::String::num_int64(random_int, 16);
+  prompt = godot::String::num_int64(random_int);
+}
+
+else if (game_mode == "Multiplication")
+{// The user will need to enter the product of two separate
+  // numbers. (This mode is currently the only one to make use
+  // of the num_2_min_val and num_2_max_val variables.)
+
+  int random_int_1 = rng->randi_range(num_1_min_val, num_1_max_val);
+  int random_int_2 = rng->randi_range(num_2_min_val, num_2_max_val);
+
+  answer = godot::String::num_int64(random_int_1 * random_int_2);
+  prompt = godot::String::num_int64(
+  random_int_1) + " x " + godot::String::num_int64(
+  random_int_2);
+}
+};
+
 void Main::start_test() {
+
+// Disabling option buttons, thus preventing the user from 
+// changing them (intentionally or otherwise) while tests are 
+// active:
+for (int i = 0; i < 4; i++)
+{get_node<OptionButton>("GameMode") -> set_item_disabled(i, true);}
+get_node<SpinBox>("Num1Min") -> set_editable(false);
+get_node<SpinBox>("Num1Max") -> set_editable(false);
+get_node<SpinBox>("Num2Min") -> set_editable(false);
+get_node<SpinBox>("Num2Max") -> set_editable(false);
+
 
 if (print_extra_info == true) {
     UtilityFunctions::print(
@@ -60,23 +176,14 @@ if (print_extra_info == true) {
   test_active = true;
   // UtilityFunctions::print("Starting function.");
 
-  int random_int = rng->randi_range(0, 255);
+  generate_prompt_and_answer();
 
-  answer = godot::String::num_int64(random_int); // Corresponds to 0x0-0xFF
   if (print_extra_info == true) {
     UtilityFunctions::print("Answer for this round:", answer);
   }
-  // Converting the random integer to a hexadecimal value:
-  // (I stumbled upon this function after trying (and failing) to use
-  // String::format to convert the integer to a hexadecimal value.
-  // Note: you can add 'true' as a third argument in order to
-  // capitalize hexadecimal values.
-  prompt = godot::String::num_int64(random_int, 16);
-  // UtilityFunctions::print(prompt);
+
   get_node<RichTextLabel>("Message_Window")
-      ->set_text("Enter the \
-decimal equivalent of the hexadecimal number " +
-                 prompt + ".");
+      ->set_text(test_intro + prompt + ".");
 
   // Now that the player can see the prompt, this will be the ideal
   // time to begin our test timer.
@@ -120,8 +227,14 @@ void Main::end_test()
       godot::String::num((end_ticks - start_ticks) / 1000000.0);
   results_dict["System_Time_at_End"] =
       godot::String(Time::get_singleton()->get_datetime_string_from_system());
-  results_dict["Answer"] = answer;
   results_dict["Prompt"] = prompt;
+  results_dict["Answer"] = answer;
+  results_dict["Game_Mode"] = game_mode;
+  results_dict["Num_1_Min"] = num_1_min_val;
+  results_dict["Num_1_Max"] = num_1_max_val;
+  results_dict["Num_2_Min"] = num_2_min_val;
+  results_dict["Num_2_Max"] = num_2_max_val;
+
 
   if (print_extra_info == true) {
 
@@ -168,7 +281,75 @@ void Main::end_test()
   start_test();
 }
 
-void Main::_on_line_edit_text_changed(godot::String player_response) {
+void Main::_on_game_mode_item_selected(int mode_id)
+{
+if (test_active == false) // It will be best to apply any changes
+// to this mode outside of an active test.
+{game_mode = id_game_mode_map[mode_id];
+  test_intro = id_test_intro_map[mode_id];
+    UtilityFunctions::print("game_mode: ", game_mode);
+    UtilityFunctions::print("test_intro: ", test_intro);
+
+  // The Num2Min and Num2Max boxes are only relevant for the
+  // Multiplication mode, so we'll hide them for all other modes.
+  if (game_mode == "Multiplication")
+
+  {
+  get_node<SpinBox>("Num2Min") -> set_editable(true);
+  //get_node<SpinBox>("Num2Min") -> set_visible(true);
+  // See
+  // https://docs.godotengine.org/en/4.5/classes/class_canvasitem.html#class-canvasitem-property-visible
+  get_node<SpinBox>("Num2Max") -> set_editable(true);
+  //get_node<SpinBox>("Num2Min") -> set_visible(true);
+
+  }
+
+  else   {
+  get_node<SpinBox>("Num2Min") -> set_editable(false);
+  // See
+  // https://docs.godotengine.org/en/4.5/classes/class_canvasitem.html#class-canvasitem-property-visible
+  get_node<SpinBox>("Num2Max") -> set_editable(false);
+
+  }
+
+}
+
+}
+
+void Main::_on_number_1_min_value_changed(float value)
+{
+if (test_active == false) 
+{
+num_1_min_val = int(value); 
+UtilityFunctions::print("num_1_min_val: ", num_1_min_val);}
+}
+
+void Main::_on_number_1_max_value_changed(float value)
+{
+if (test_active == false) 
+{
+num_1_max_val = int(value); 
+UtilityFunctions::print("num_1_max_val: ", num_1_max_val);}
+}
+
+void Main::_on_number_2_min_value_changed(float value)
+{
+if (test_active == false) 
+{
+num_2_min_val = int(value); 
+UtilityFunctions::print("num_2_min_val: ", num_2_min_val);}
+}
+
+void Main::_on_number_2_max_value_changed(float value)
+{
+if (test_active == false) 
+{
+num_2_max_val = int(value); 
+UtilityFunctions::print("num_2_max_val: ", num_2_max_val);}
+}
+
+
+void Main::_on_response_window_text_changed(godot::String player_response) {
 
   // Special thanks to ElMetroid on the Godot Discord for suggesting
   // the use of a signal to respond to players' entries
@@ -252,9 +433,13 @@ void Main::save_results() {
     // String filename = current_time_without_spaces + "_0xflash_results.csv";
     String filename = "user://0xflash_results.csv";
 
-    // Building a header row:
+    // Building a header row: (We'll also iterate through this 
+    // array for each results_array entry to add the corresponding 
+    // values for each header item into our .csv file.)
     PackedStringArray header_row{"Test_Number", "Test_Time",
-                                 "System_Time_at_End", "Prompt", "Answer"};
+                                 "System_Time_at_End", "Prompt", "Answer",
+                                "Game_Mode", "Num_1_Min", "Num_1_Max",
+                                "Num_2_Min", "Num_2_Max"};
 
     // Checking whether this file already exists: (If not,
     // we'll create it *and* store our header row as its first
@@ -366,12 +551,23 @@ void Main::_process(double delta) {
     //  close out of the game.
     get_node<LineEdit>("Response_Window")->clear(); // Clears the 'q'
     // out of the response window
+
     test_active = false; // Now that this value is set to false,
     // the player won't be able to complete the current game and log
     // his/her results.
     // Resetting the test_number value (since we've now exited
     // out of the previous round):
     within_round_test_number = 1;
+
+    // Making the option buttons editable again:
+  for (int i = 0; i < 4; i++)
+{get_node<OptionButton>("GameMode") -> set_item_disabled(i, false);}
+get_node<SpinBox>("Num1Min") -> set_editable(true);
+get_node<SpinBox>("Num1Max") -> set_editable(true);
+get_node<SpinBox>("Num2Min") -> set_editable(true);
+get_node<SpinBox>("Num2Max") -> set_editable(true);
+
+
     get_node<RichTextLabel>("Message_Window")
         ->set_text("Exited current round. You can save your unsaved \
 results from all rounds within this session by pressing s.\nPress \

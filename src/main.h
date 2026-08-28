@@ -1,16 +1,23 @@
 #pragma once
 #include <godot_cpp/classes/node.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
-#include <godot_cpp/classes/line_edit.hpp>
-#include <godot_cpp/variant/array.hpp>
-#include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/classes/canvas_layer.hpp>
 #include <godot_cpp/classes/rich_text_label.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/classes/random_number_generator.hpp>
 #include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/option_button.hpp>
+#include <godot_cpp/classes/spin_box.hpp>
+#include <godot_cpp/classes/line_edit.hpp>
+
+#include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
+#include <godot_cpp/variant/array.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/typed_dictionary.hpp>
+
+
+
 
 
 
@@ -52,6 +59,33 @@ Ref<RandomNumberGenerator> rng = memnew(RandomNumberGenerator);
 uint64_t start_ticks = 0;
 uint64_t end_ticks = 0;
 
+// Game configuration settings:
+// The default mode is B16 to B10, which has a corresponding ID
+// of 0.
+godot::String game_mode = "B16 to B10";
+godot::String test_intro = "Enter the decimal equivalent of the \
+hexadecimal number ";
+
+// The following IDs and game modes should match what has been
+// configured within the editor.
+TypedDictionary<int, godot::String> id_game_mode_map {
+{0, "B16 to B10"},
+{1, "B16 (M16) to B10"},
+{2, "B10 to B16"},
+{3, "Multiplication"}};
+
+TypedDictionary<int, godot::String> id_test_intro_map {
+{0, "Enter the decimal equivalent of the hexadecimal number "},
+{1, "Enter the decimal equivalent of the hexadecimal number "},
+{2, "Enter the hexadecimal equivalent of the decimal number "},
+{3, "Enter the product of "}};
+
+int num_1_min_val = 0;
+int num_1_max_val = 255;
+int num_2_min_val = 0;
+int num_2_max_val = 0;
+
+
 protected:
 
 static void _bind_methods();
@@ -69,15 +103,27 @@ void start_test(); // Keeping this name generic so that it can
 // multiple test types (e.g. hex to int, int to hex, multiplication
 // calculations, etc.)
 
-void _on_line_edit_text_changed(godot::String player_response);
+void _on_response_window_text_changed(godot::String player_response);
 // Based on: https://docs.godotengine.org/en/stable/classes/class_lineedit.html#class-lineedit-signal-text-changed
 // (Note that, because the text_changed() signal emits a value
 // (e.g. the latest version of the text within the LineEdit field),
 // we'll need to add an argument to this function in order to
 // accept that new text.
 
+void _on_game_mode_item_selected(int mode_id);
+
+void _on_number_1_min_value_changed(float value);
+
+void _on_number_1_max_value_changed(float value);
+
+void _on_number_2_min_value_changed(float value);
+
+void _on_number_2_max_value_changed(float value);
+
 void end_test();
 
 void save_results();
+
+void generate_prompt_and_answer();
 
 };
