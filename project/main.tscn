@@ -8,81 +8,118 @@ default_font_size = 32
 
 [node name="Main" type="Main" unique_id=1185656381]
 
-[node name="Message_Window_Background" type="ColorRect" parent="." unique_id=1762562956]
-offset_left = 87.0
-offset_top = 190.0
-offset_right = 1047.0
-offset_bottom = 390.0
+[node name="Prompt_Window_Background" type="ColorRect" parent="." unique_id=1762562956]
+offset_left = 642.0
+offset_top = 270.0
+offset_right = 1242.0
+offset_bottom = 470.0
 color = Color(0, 0, 0, 1)
 
-[node name="Message_Window" type="RichTextLabel" parent="." unique_id=1558944075]
-custom_minimum_size = Vector2(960, 200)
-offset_left = 87.0
-offset_top = 190.0
-offset_right = 1047.0
-offset_bottom = 390.0
+[node name="Prompt_Window" type="RichTextLabel" parent="." unique_id=1558944075]
+offset_left = 662.0
+offset_top = 290.0
+offset_right = 1222.0
+offset_bottom = 450.0
 theme_override_font_sizes/normal_font_size = 32
+
+[node name="Notification_Window_Background" type="ColorRect" parent="." unique_id=343943516]
+offset_left = 1300.0
+offset_top = 181.0
+offset_right = 1880.0
+offset_bottom = 981.0
+color = Color(0.11764706, 0.11764706, 0.11764706, 1)
+
+[node name="Notification_Window" type="RichTextLabel" parent="." unique_id=1496909077]
+offset_left = 1320.0
+offset_top = 201.0
+offset_right = 1860.0
+offset_bottom = 961.0
+theme_override_font_sizes/normal_font_size = 24
+
+[node name="Correct_Indicator" type="ColorRect" parent="." unique_id=693481244]
+offset_left = 1166.0
+offset_top = 532.0
+offset_right = 1206.0
+offset_bottom = 572.0
+color = Color(0.48452926, 0.48452926, 0.48452926, 1)
+
+[node name="Correct_Indicator_Timer" type="Timer" parent="Correct_Indicator" unique_id=1154619346]
+wait_time = 0.2
 
 [node name="Response_Window" type="LineEdit" parent="." unique_id=985133991]
 anchors_preset = -1
 anchor_right = 0.05
 anchor_bottom = 0.147
-offset_left = 367.0
-offset_top = 458.0
-offset_right = 671.0
-offset_bottom = 399.24
+offset_left = 734.0
+offset_top = 501.0
+offset_right = 1038.0
+offset_bottom = 442.24
 theme_override_font_sizes/font_size = 32
+alignment = 1
 
 [node name="GameMode" type="OptionButton" parent="." unique_id=569674459]
-offset_left = 1188.0
-offset_top = 112.0
-offset_right = 1488.0
-offset_bottom = 165.0
+offset_left = 150.0
+offset_top = 273.0
+offset_right = 450.0
+offset_bottom = 326.0
 theme = SubResource("Theme_7dm0k")
 theme_override_font_sizes/font_size = 32
 alignment = 1
 selected = 0
-item_count = 5
+item_count = 3
 popup/item_0/text = "B16 to B10"
 popup/item_0/id = 0
-popup/item_1/text = "B16 (x16) to B10"
+popup/item_1/text = "B10 to B16"
 popup/item_1/id = 1
-popup/item_2/text = "B10 to B16"
+popup/item_2/text = "Multiplication"
 popup/item_2/id = 2
-popup/item_3/text = "B10 (x16) to B16"
-popup/item_3/id = 3
-popup/item_4/text = "Multiplication"
-popup/item_4/id = 4
 
 [node name="GameModeLabel" type="RichTextLabel" parent="." unique_id=718379222]
-offset_left = 1225.0
-offset_top = 31.0
-offset_right = 1425.0
-offset_bottom = 91.0
+offset_left = 200.0
+offset_top = 192.0
+offset_right = 400.0
+offset_bottom = 252.0
 theme_override_font_sizes/normal_font_size = 32
 text = "Game Mode"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="GameTitle" type="RichTextLabel" parent="." unique_id=874102648]
-offset_left = 443.0
-offset_top = 29.0
-offset_right = 714.0
-offset_bottom = 124.0
+offset_left = 801.0
+offset_top = 135.0
+offset_right = 1072.0
+offset_bottom = 230.0
 theme_override_font_sizes/normal_font_size = 64
 text = "0xFlash"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Num1Label" type="RichTextLabel" parent="." unique_id=526319034]
-offset_left = 1227.0
-offset_top = 209.0
-offset_right = 1527.0
-offset_bottom = 269.0
+offset_left = 150.0
+offset_top = 364.0
+offset_right = 450.0
+offset_bottom = 464.0
 theme_override_font_sizes/normal_font_size = 32
-text = "Number 1 Range"
+text = "Number Range 
+(in base 10)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IntervalLabel" type="RichTextLabel" parent="." unique_id=1826786797]
+offset_left = 200.0
+offset_top = 581.0
+offset_right = 400.0
+offset_bottom = 641.0
+theme_override_font_sizes/normal_font_size = 32
+text = "Interval"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Num1Min" type="SpinBox" parent="." unique_id=1475194047]
-offset_left = 1149.0
-offset_top = 285.0
-offset_right = 1299.0
-offset_bottom = 345.0
+offset_left = 115.0
+offset_top = 480.0
+offset_right = 265.0
+offset_bottom = 540.0
 theme = SubResource("Theme_ig7tw")
 rounded = true
 allow_greater = true
@@ -90,19 +127,34 @@ allow_lesser = true
 alignment = 1
 update_on_text_changed = true
 
+[node name="Interval" type="SpinBox" parent="." unique_id=1924653157]
+offset_left = 225.0
+offset_top = 650.0
+offset_right = 375.0
+offset_bottom = 710.0
+theme = SubResource("Theme_ig7tw")
+value = 1.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+alignment = 1
+update_on_text_changed = true
+
 [node name="Num1Separator" type="RichTextLabel" parent="." unique_id=513811705]
-offset_left = 1321.0
-offset_top = 287.0
-offset_right = 1371.0
-offset_bottom = 347.0
+offset_left = 275.0
+offset_top = 480.0
+offset_right = 325.0
+offset_bottom = 540.0
 theme_override_font_sizes/normal_font_size = 32
 text = "to"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Num1Max" type="SpinBox" parent="." unique_id=2125820240]
-offset_left = 1389.0
-offset_top = 287.0
-offset_right = 1539.0
-offset_bottom = 347.0
+offset_left = 335.0
+offset_top = 480.0
+offset_right = 485.0
+offset_bottom = 540.0
 theme = SubResource("Theme_ig7tw")
 max_value = 255.0
 value = 255.0
@@ -113,26 +165,20 @@ alignment = 1
 update_on_text_changed = true
 
 [node name="Num2Label" type="RichTextLabel" parent="." unique_id=680106013]
-offset_left = 1199.0
-offset_top = 400.0
-offset_right = 1499.0
-offset_bottom = 460.0
+offset_left = 150.0
+offset_top = 579.0
+offset_right = 450.0
+offset_bottom = 639.0
 theme_override_font_sizes/normal_font_size = 32
 text = "Number 2 Range"
-
-[node name="Num2Label2" type="RichTextLabel" parent="." unique_id=2070476656]
-offset_left = 1147.0
-offset_top = 459.0
-offset_right = 1666.0
-offset_bottom = 519.0
-theme_override_font_sizes/normal_font_size = 24
-text = "(for Multiplication mode only)"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Num2Min" type="SpinBox" parent="." unique_id=514055714]
-offset_left = 1150.0
-offset_top = 540.0
-offset_right = 1300.0
-offset_bottom = 600.0
+offset_left = 115.0
+offset_top = 650.0
+offset_right = 265.0
+offset_bottom = 710.0
 theme = SubResource("Theme_ig7tw")
 rounded = true
 allow_greater = true
@@ -141,19 +187,22 @@ alignment = 1
 update_on_text_changed = true
 
 [node name="Num2Separator" type="RichTextLabel" parent="." unique_id=2041811404]
-offset_left = 1323.0
-offset_top = 540.0
-offset_right = 1373.0
-offset_bottom = 600.0
+offset_left = 275.0
+offset_top = 650.0
+offset_right = 325.0
+offset_bottom = 710.0
 theme_override_font_sizes/normal_font_size = 32
 text = "to"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Num2Max" type="SpinBox" parent="." unique_id=1294893483]
-offset_left = 1392.0
-offset_top = 540.0
-offset_right = 1542.0
-offset_bottom = 600.0
+offset_left = 335.0
+offset_top = 650.0
+offset_right = 485.0
+offset_bottom = 710.0
 theme = SubResource("Theme_ig7tw")
+value = 10.0
 rounded = true
 allow_greater = true
 allow_lesser = true
@@ -161,10 +210,40 @@ alignment = 1
 update_on_text_changed = true
 
 [node name="AboutLabel" type="RichTextLabel" parent="." unique_id=436747943]
-offset_left = 222.0
-offset_top = 969.0
-offset_right = 1682.0
-offset_bottom = 1065.0
-theme_override_font_sizes/normal_font_size = 32
-text = "0xFlash, an MIT-licensed game, was created using the Godot Engine by Ken Burchfiel.
+offset_left = 24.0
+offset_top = 962.0
+offset_right = 854.0
+offset_bottom = 1070.0
+theme_override_font_sizes/normal_font_size = 22
+text = "0xFlash, an MIT-licensed game, was created using the Godot Engine by Ken Burchfiel and coded in C++ using Godot's GDExtension feature.
 GitHub repository: https://github.com/kburchfiel/0xflash"
+
+[node name="Instructions" type="RichTextLabel" parent="." unique_id=2141663399]
+offset_left = 724.0
+offset_top = 709.0
+offset_right = 1188.0
+offset_bottom = 876.0
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "Space bar: Begin new round of tests
+Q: End current round of tests
+S: Save unsaved results from all rounds within current session"
+
+[node name="InstructionsLabel" type="RichTextLabel" parent="." unique_id=675783265]
+offset_left = 835.0
+offset_top = 637.0
+offset_right = 1035.0
+offset_bottom = 697.0
+theme_override_font_sizes/normal_font_size = 32
+text = "Commands
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SaveButton" type="Button" parent="." unique_id=1444755084]
+offset_left = 200.0
+offset_top = 805.0
+offset_right = 400.0
+offset_bottom = 865.0
+theme_override_font_sizes/font_size = 28
+text = "Save Results"
