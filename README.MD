@@ -6,7 +6,9 @@ Released under the MIT License
 
 (Note: As with my other repositories at https://github.com/kburchfiel/, I am not using generative-AI tools to create this project.)
 
-![](Media/0xFlash_Screenshot.png)
+![](Media/0xFlash_Gameplay_Smaller.gif)
+
+
 
 ## Gameplay Instructions
 
@@ -24,9 +26,12 @@ You can choose your desired mode via the 'Game Mode' dropdown menu on the top le
 
 For the hexadecimal <-> decimal game modes, you can also choose a custom interval for your prompts. For instance, selecting a number range of 0 to 15, along with an interval of 16, will let you test yourself on the multiples of 16 ranging from 0 to 240 (15x16), which can prove useful when learning how to quickly convert from a decimal number to a 2-digit hexadecimal number and back. (After all, a 2-digit hexadecimal number, in decimal form, is simply (1) 16 times a number between 0 and 15 plus (2) a value between 0 and 15.)
 
+![](Media/0xFlash_Screenshot.png)
+
 ### Playing the game
 
 Once you begin a round (by pressing Space within the gray response box at the center of the window), you'll be presented with a continuous series of tests. Once you enter the correct answer for a prompt, the gray square to the right of the response box will flash green; the response box will get cleared out; and a new prompt will appear. (You don't need to press Enter after writing your response; the game will recognize a correct answer right away.) Once you're finished with a round, simply press Q to quit.
+
 
 ### Storing your results
 
