@@ -44,6 +44,8 @@ And on Windows, it should be available at:
 
 `APPDATA%\Godot\app_userdata\0xflash\0xflash_results.csv`
 
+(For more information, see https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html.)
+
 Here's what these results look like within LibreOffice Calc:
 
 ![](Media/Results_Screenshot.png)
