@@ -36,7 +36,15 @@ Once you begin a round (by pressing Space within the gray response box at the ce
 
 ### Storing your results
 
-Pressing 'S' outside of a test (or clicking the Save Results button) will save your results to a .csv file, thus making it easier to keep track of and analyze your progress. Here's what these results look like within LibreOffice Calc:
+Pressing 'S' outside of a test (or clicking the Save Results button) will save your results to a .csv file, thus making it easier to keep track of and analyze your progress. The actual location of this file will vary between operating systems. On Linux, you should be able to find it at:
+
+`/home/<your_username>/.local/share/godot/app_userdata/0xflash/0xflash_results.csv`
+
+And on Windows, it should be available at:
+
+`APPDATA%\Godot\app_userdata\0xflash\0xflash_results.csv`
+
+Here's what these results look like within LibreOffice Calc:
 
 ![](Media/Results_Screenshot.png)
 
