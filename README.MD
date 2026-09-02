@@ -9,22 +9,23 @@ Released under the MIT License
 ![](Media/0xFlash_Gameplay_Smaller.gif)
 
 
+**To download pre-compiled Linux or Windows releases of this game, visit its itch.io page at https://kburchfiel.itch.io/0xflash .**
 
 ## Gameplay Instructions
 
 0xFlash is a simple game that allows you to practice three different skills:
 
-1. Converting hexadecimal numbers like 7e to decimal ones like 126
+1. Converting hexadecimal numbers like 7e to decimal ones like 126 *(Game mode: B16 to B10)*
 
-1. Converting decimal numbers to hexadecimal ones
+1. Converting decimal numbers to hexadecimal ones *(Game mode: B10 to B16)*
 
-1. Multiplying two numbers
+1. Multiplying two numbers *(Game mode: Multiplication)*
 
 ### Configuring a round
 
 You can choose your desired mode via the 'Game Mode' dropdown menu on the top left. The game also allows you to set the difficulty level for a given mode by determining the smallest- and largest-possible values that will be chosen for each test. 
 
-For the hexadecimal <-> decimal game modes, you can also choose a custom interval for your prompts. For instance, selecting a number range of 0 to 15, along with an interval of 16, will let you test yourself on the multiples of 16 ranging from 0 to 240 (15x16), which can prove useful when learning how to quickly convert from a decimal number to a 2-digit hexadecimal number and back. (After all, a 2-digit hexadecimal number, in decimal form, is simply (1) 16 times a number between 0 and 15 plus (2) a value between 0 and 15.)
+For the hexadecimal <-> decimal game modes (B16 to B10 and B10 to B16), you can also choose a custom interval for your prompts. For instance, selecting a number range of 0 to 15, along with an interval of 16, will let you test yourself on the multiples of 16 ranging from 0 to 240 (15x16), which can prove useful when learning how to quickly convert from a decimal number to a 2-digit hexadecimal number and back. (After all, a 2-digit hexadecimal number, in decimal form, is simply (1) 16 times a number between 0 and 15 plus (2) a value between 0 and 15.)
 
 ![](Media/0xFlash_Screenshot.png)
 

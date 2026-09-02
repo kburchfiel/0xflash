@@ -13,3 +13,9 @@ CMakeFiles/
 build/
 .jupyter/desktop-workspaces/default-37a8.jupyterlab-workspace
 kjb3_0xflash_results_backup.csv
+project/0xflash.exe
+.gitignore
+project/libgdexample.windows.template_release.x86_64.dll
+project/0xflash.pck
+project/0xflash.x86_64
+project/bin/libgdexample.windows.template_release.x86_64.dll

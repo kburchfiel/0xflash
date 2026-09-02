@@ -100,6 +100,10 @@ void _ready();
 
 void _process(double delta) override;
 
+void end_round();
+
+void start_round();
+
 void start_test(); // Keeping this name generic so that it can
 // eventually (with some modifications) to be used to support
 // multiple test types (e.g. hex to int, int to hex, multiplication

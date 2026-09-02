@@ -182,7 +182,11 @@ void Main::update_notification_window(const godot::String new_notification)
   get_node<RichTextLabel>("Notification_Window")->set_text(notification_string);
 }
 
-void Main::start_test() {
+void Main::start_round() {
+  // start_round() runs actions that ony need to be performed
+  // at the beginning and end of the round--thus decreasing the amount
+  // of work for start_test(), which will probably run much more
+  // frequently.
 
   // Disabling option buttons, thus preventing the user from
   // changing them (intentionally or otherwise) while tests are
@@ -208,6 +212,47 @@ void Main::start_test() {
   // included within the player's response:
   get_node<LineEdit>("Response_Window")->clear();
   test_active = true;
+
+  // Launching the first test of the round:
+  start_test();
+}
+
+void Main::end_round() {
+if (print_extra_info == true) {
+      UtilityFunctions::print("Exiting out of the current round.");
+    }
+    //  start_test() will change test_active to true right away,
+    //  thus preventing this line from having any effect until we
+    //  close out of the game.
+    get_node<LineEdit>("Response_Window")->clear(); // Clears the 'q'
+    // out of the response window
+
+    test_active = false; // Now that this value is set to false,
+    // the player won't be able to complete the current game and log
+    // his/her results.
+
+    // Resetting the test_number value (since we've now exited
+    // out of the previous round):
+    within_round_test_number = 1;
+
+    // Making the option buttons editable again:
+    for (int i = 0; i < id_game_mode_map.size(); i++) {
+      get_node<OptionButton>("GameMode")->set_item_disabled(i, false);
+    }
+    get_node<SpinBox>("Num1Min")->set_editable(true);
+    get_node<SpinBox>("Num1Max")->set_editable(true);
+    get_node<SpinBox>("Num2Min")->set_editable(true);
+    get_node<SpinBox>("Num2Max")->set_editable(true);
+    get_node<SpinBox>("Interval")->set_editable(true);
+    get_node<Button>("SaveButton")->set_disabled(false);
+
+    get_node<RichTextLabel>("Prompt_Window")
+        ->set_text("Exited current round. Press S to save your \
+progress and Space to begin a new round of tests.");
+        }
+
+
+void Main::start_test() {
   // UtilityFunctions::print("Starting function.");
 
   generate_prompt_and_answer();
@@ -216,7 +261,8 @@ void Main::start_test() {
     UtilityFunctions::print("Answer for this round:", answer);
   }
 
-  get_node<RichTextLabel>("Prompt_Window")->set_text(test_intro + prompt + ".");
+  get_node<RichTextLabel>("Prompt_Window")->set_text(
+  test_intro + prompt + ".");
 
   // Now that the player can see the prompt, this will be the ideal
   // time to begin our test stopwatch.
@@ -230,8 +276,6 @@ void Main::end_test()
   if (print_extra_info == true) {
     UtilityFunctions::print("started end_test().");
   }
-  test_active = false; // This value will get set back to true
-  // by start_test() almost immediately.
   // Now that a successful response has been entered, the screen
   // should be cleared:
   get_node<LineEdit>("Response_Window")->clear();
@@ -480,6 +524,9 @@ void Main::_on_save_button_pressed()
 
 void Main::save_results() {
 
+    get_node<LineEdit>("Response_Window")->clear(); // Clears the 's'
+    // out of the response window
+
   // It wouldn't make sense to save
   // an empty array--and attempting to do so could actually overwrite
   // a file that we had saved less than one second ago.
@@ -547,8 +594,7 @@ results at the moment.");
     // open it for further edits:
     results_csv_file = FileAccess::open(filename, FileAccess::READ_WRITE);
     // read_write will allow us to add new data to a file without
-    // overwriting any of its previous data. (This file will get
-    // created if it doesn't yet exist. See:
+    // overwriting any of its previous data. See:
     // https://docs.godotengine.org/en/stable/classes/class_fileaccess.html#class-fileaccess-method-seek-end
 
     // Checking the first line of this file to make sure that
@@ -623,51 +669,20 @@ void Main::_process(double delta) {
   // no test is currently active.
   if ((input->is_action_just_pressed("start_game")) && (test_active == false)) {
     if (print_extra_info == true) {
-      UtilityFunctions::print("Calling start_test;");
+      UtilityFunctions::print("Calling start_round.");
     }
-    //  start_test() will change test_active to true right away,
+    //  start_round() will change test_active to true right away,
     //  thus preventing this line from having any effect until we
-    //  close out of the game.
-    start_test();
+    //  close out of the round.
+    start_round();
   }
 
   if ((input->is_action_just_pressed("end_game")) && (test_active == true)) {
-    if (print_extra_info == true) {
-      UtilityFunctions::print("Exiting out of the current round.");
-    }
-    //  start_test() will change test_active to true right away,
-    //  thus preventing this line from having any effect until we
-    //  close out of the game.
-    get_node<LineEdit>("Response_Window")->clear(); // Clears the 'q'
-    // out of the response window
-
-    test_active = false; // Now that this value is set to false,
-    // the player won't be able to complete the current game and log
-    // his/her results.
-    // Resetting the test_number value (since we've now exited
-    // out of the previous round):
-    within_round_test_number = 1;
-
-    // Making the option buttons editable again:
-    for (int i = 0; i < id_game_mode_map.size(); i++) {
-      get_node<OptionButton>("GameMode")->set_item_disabled(i, false);
-    }
-    get_node<SpinBox>("Num1Min")->set_editable(true);
-    get_node<SpinBox>("Num1Max")->set_editable(true);
-    get_node<SpinBox>("Num2Min")->set_editable(true);
-    get_node<SpinBox>("Num2Max")->set_editable(true);
-    get_node<SpinBox>("Interval")->set_editable(true);
-    get_node<Button>("SaveButton")->set_disabled(false);
-
-    get_node<RichTextLabel>("Prompt_Window")
-        ->set_text("Exited current round. Press S to save your \
-progress and Space to begin a new round of tests.");
+    end_round();
   }
 
   if ((input->is_action_just_pressed("save_results")) &&
       (test_active == false)) {
-    get_node<LineEdit>("Response_Window")->clear(); // Clears the 's'
-    // out of the response window
     save_results();
 
     if (print_extra_info == true) {
