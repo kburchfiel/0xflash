@@ -177,8 +177,58 @@ void Main::update_notification_window(const godot::String new_notification)
 // the existing notification string, then displays this string
 // within our notification window.
 {
-  notification_string =
-      new_notification + godot::String("\n\n") + notification_string;
+
+  double notification_update_start_time =
+      Time::get_singleton()->get_ticks_usec();
+
+  // Adding the new notification to the array:
+  notification_array.append(new_notification + godot::String("\n\n"));
+
+  int notification_array_size = notification_array.size();
+
+  if (print_extra_info == true) {
+    UtilityFunctions::print("Current notification array size:",
+                            notification_array_size);
+  }
+
+  // Trimming the array down:
+  // Note that the second argument of slice is exclusive,
+  // so we don't need to subtract 1 from the two arguments to
+  // min().
+  // (See
+  // https://docs.godotengine.org/en/stable/classes/class_array.html#class-array-method-slice)
+  notification_array = notification_array.slice(
+      0, std::min(notification_array_size, notification_message_limit));
+
+  godot::String notification_string = "";
+
+  // Adding the results of the array to a single string:
+
+  for (int i = 0; i < notification_array.size(); i++)
+
+  {
+    notification_string += notification_array[i];
+  }
+
+  if (print_extra_info == true) {
+    UtilityFunctions::print("New notification array size:",
+                            notification_array.size());
+  }
+
+  double notification_update_end_time = Time::get_singleton()->get_ticks_usec();
+  double notification_update_ms =
+      (notification_update_end_time - notification_update_start_time) /
+      1000; // There are 1000
+  // microseconds in a single millisecond
+
+  if (print_extra_info == true) {
+    UtilityFunctions::print("Milliseconds needed to generate new \
+notification string:",
+                            notification_update_ms); // On my (high-end) laptop,
+    // it generarlly took only 0.03 to 0.05 milliseconds to update
+    // the string.
+  }
+
   get_node<RichTextLabel>("Notification_Window")->set_text(notification_string);
 }
 
@@ -192,8 +242,9 @@ void Main::start_round() {
   // changing them (intentionally or otherwise) while tests are
   // active:
 
-  // UtilityFunctions::print("id_game_mode_map_size", id_game_mode_map.size());
-
+  if (print_extra_info == true) {
+    UtilityFunctions::print("id_game_mode_map_size", id_game_mode_map.size());
+  }
   for (int i = 0; i < id_game_mode_map.size(); i++) {
     get_node<OptionButton>("GameMode")->set_item_disabled(i, true);
   }
@@ -218,42 +269,43 @@ void Main::start_round() {
 }
 
 void Main::end_round() {
-if (print_extra_info == true) {
-      UtilityFunctions::print("Exiting out of the current round.");
-    }
-    //  start_test() will change test_active to true right away,
-    //  thus preventing this line from having any effect until we
-    //  close out of the game.
-    get_node<LineEdit>("Response_Window")->clear(); // Clears the 'q'
-    // out of the response window
+  if (print_extra_info == true) {
+    UtilityFunctions::print("Exiting out of the current round.");
+  }
+  //  start_test() will change test_active to true right away,
+  //  thus preventing this line from having any effect until we
+  //  close out of the game.
+  get_node<LineEdit>("Response_Window")->clear(); // Clears the 'q'
+  // out of the response window
 
-    test_active = false; // Now that this value is set to false,
-    // the player won't be able to complete the current game and log
-    // his/her results.
+  test_active = false; // Now that this value is set to false,
+  // the player won't be able to complete the current game and log
+  // his/her results.
 
-    // Resetting the test_number value (since we've now exited
-    // out of the previous round):
-    within_round_test_number = 1;
+  // Resetting the test_number value (since we've now exited
+  // out of the previous round):
+  within_round_test_number = 1;
 
-    // Making the option buttons editable again:
-    for (int i = 0; i < id_game_mode_map.size(); i++) {
-      get_node<OptionButton>("GameMode")->set_item_disabled(i, false);
-    }
-    get_node<SpinBox>("Num1Min")->set_editable(true);
-    get_node<SpinBox>("Num1Max")->set_editable(true);
-    get_node<SpinBox>("Num2Min")->set_editable(true);
-    get_node<SpinBox>("Num2Max")->set_editable(true);
-    get_node<SpinBox>("Interval")->set_editable(true);
-    get_node<Button>("SaveButton")->set_disabled(false);
+  // Making the option buttons editable again:
+  for (int i = 0; i < id_game_mode_map.size(); i++) {
+    get_node<OptionButton>("GameMode")->set_item_disabled(i, false);
+  }
+  get_node<SpinBox>("Num1Min")->set_editable(true);
+  get_node<SpinBox>("Num1Max")->set_editable(true);
+  get_node<SpinBox>("Num2Min")->set_editable(true);
+  get_node<SpinBox>("Num2Max")->set_editable(true);
+  get_node<SpinBox>("Interval")->set_editable(true);
+  get_node<Button>("SaveButton")->set_disabled(false);
 
-    get_node<RichTextLabel>("Prompt_Window")
-        ->set_text("Exited current round. Press S to save your \
+  get_node<RichTextLabel>("Prompt_Window")
+      ->set_text("Exited current round. Press S to save your \
 progress and Space to begin a new round of tests.");
-        }
-
+}
 
 void Main::start_test() {
-  // UtilityFunctions::print("Starting function.");
+  if (print_extra_info == true) {
+    UtilityFunctions::print("Launching start_test().");
+  }
 
   generate_prompt_and_answer();
 
@@ -261,8 +313,7 @@ void Main::start_test() {
     UtilityFunctions::print("Answer for this round:", answer);
   }
 
-  get_node<RichTextLabel>("Prompt_Window")->set_text(
-  test_intro + prompt + ".");
+  get_node<RichTextLabel>("Prompt_Window")->set_text(test_intro + prompt + ".");
 
   // Now that the player can see the prompt, this will be the ideal
   // time to begin our test stopwatch.
@@ -373,9 +424,10 @@ void Main::_on_game_mode_item_selected(const int mode_id) {
   {
     game_mode = id_game_mode_map[mode_id];
     test_intro = id_test_intro_map[mode_id];
-    UtilityFunctions::print("game_mode: ", game_mode);
-    UtilityFunctions::print("test_intro: ", test_intro);
-
+    if (print_extra_info == true) {
+      UtilityFunctions::print("game_mode: ", game_mode);
+      UtilityFunctions::print("test_intro: ", test_intro);
+    }
     if (game_mode == "Multiplication")
 
     // Certain elements are only relevant for either the Multiplication
@@ -416,35 +468,45 @@ void Main::_on_game_mode_item_selected(const int mode_id) {
 void Main::_on_number_1_min_value_changed(const float value) {
   if (test_active == false) {
     num_1_min_val = int(value);
-    UtilityFunctions::print("num_1_min_val: ", num_1_min_val);
+    if (print_extra_info == true) {
+      UtilityFunctions::print("num_1_min_val: ", num_1_min_val);
+    }
   }
 }
 
 void Main::_on_number_1_max_value_changed(const float value) {
   if (test_active == false) {
     num_1_max_val = int(value);
-    UtilityFunctions::print("num_1_max_val: ", num_1_max_val);
+    if (print_extra_info == true) {
+      UtilityFunctions::print("num_1_max_val: ", num_1_max_val);
+    }
   }
 }
 
 void Main::_on_number_2_min_value_changed(const float value) {
   if (test_active == false) {
     num_2_min_val = int(value);
-    UtilityFunctions::print("num_2_min_val: ", num_2_min_val);
+    if (print_extra_info == true) {
+      UtilityFunctions::print("num_2_min_val: ", num_2_min_val);
+    }
   }
 }
 
 void Main::_on_number_2_max_value_changed(const float value) {
   if (test_active == false) {
     num_2_max_val = int(value);
-    UtilityFunctions::print("num_2_max_val: ", num_2_max_val);
+    if (print_extra_info == true) {
+      UtilityFunctions::print("num_2_max_val: ", num_2_max_val);
+    }
   }
 }
 
 void Main::_on_interval_value_changed(const float value) {
   if (test_active == false) {
     interval = int(value);
-    UtilityFunctions::print("interval: ", interval);
+    if (print_extra_info == true) {
+      UtilityFunctions::print("interval: ", interval);
+    }
   }
 }
 
@@ -524,8 +586,8 @@ void Main::_on_save_button_pressed()
 
 void Main::save_results() {
 
-    get_node<LineEdit>("Response_Window")->clear(); // Clears the 's'
-    // out of the response window
+  get_node<LineEdit>("Response_Window")->clear(); // Clears the 's'
+  // out of the response window
 
   // It wouldn't make sense to save
   // an empty array--and attempting to do so could actually overwrite
@@ -538,128 +600,128 @@ results at the moment.");
     return;
   }
 
+  // Saving a parsed copy of the current text to a local file:
+  // (Based on ZenPyro's response within the Godot Discord at
+  // https://discord.com/channels/212250894228652034/342047011778068481/1266192098953269369
+  // )
+  //
+  Ref<FileAccess> results_csv_file;
 
-    // Saving a parsed copy of the current text to a local file:
-    // (Based on ZenPyro's response within the Godot Discord at
-    // https://discord.com/channels/212250894228652034/342047011778068481/1266192098953269369
-    // )
-    //
-    Ref<FileAccess> results_csv_file;
+  // The simplest option (which I originally tested out) would be
+  // to create a new file for each set of saved data. (Timestamps
+  // would be used to differentiate these files.) However,
+  // this would cause the data folder to get cluttered and also
+  // make analyses a bit trickier, since you'd first need to
+  // add all of the separate data files together.
+  // Therefore, I'm now saving results to the same .csv file;
+  // if this file already exists, the results will get appended
+  // (provided the headers within the file match what the code
+  // expects); if it doesn't yet exist, it will get initialized
+  // with a standard set of headers.
 
-    // The simplest option (which I originally tested out) would be
-    // to create a new file for each set of saved data. (Timestamps
-    // would be used to differentiate these files.) However,
-    // this would cause the data folder to get cluttered and also
-    // make analyses a bit trickier, since you'd first need to
-    // add all of the separate data files together.
-    // Therefore, I'm now saving results to the same .csv file;
-    // if this file already exists, the results will get appended
-    // (provided the headers within the file match what the code
-    // expects); if it doesn't yet exist, it will get initialized
-    // with a standard set of headers.
+  // Adding a timestamp to the text file will prevent a newer
+  // copy from overwriting an older one.
 
-    // Adding a timestamp to the text file will prevent a newer
-    // copy from overwriting an older one.
+  // A colon-free timestamp should prove more compatible for
+  // filenames on at least one operating system.
+  // godot::String current_time_without_spaces =
+  //     godot::String(Time::get_singleton()->get_datetime_string_from_system())
+  //         .replace(":", "");
 
-    // A colon-free timestamp should prove more compatible for
-    // filenames on at least one operating system.
-    // godot::String current_time_without_spaces =
-    //     godot::String(Time::get_singleton()->get_datetime_string_from_system())
-    //         .replace(":", "");
+  // String filename = current_time_without_spaces + "_0xflash_results.csv";
+  String filename = "user://0xflash_results.csv";
 
-    // String filename = current_time_without_spaces + "_0xflash_results.csv";
-    String filename = "user://0xflash_results.csv";
+  // Building a header row: (We'll also iterate through this
+  // array for each results_array entry to add the corresponding
+  // values for each header item into our .csv file.)
+  PackedStringArray header_row{"Test_Number", "Test_Time", "System_Time_at_End",
+                               "Prompt",      "Answer",    "Game_Mode",
+                               "Num_1_Min",   "Num_1_Max", "Num_2_Min",
+                               "Num_2_Max",   "Interval"};
 
-    // Building a header row: (We'll also iterate through this
-    // array for each results_array entry to add the corresponding
-    // values for each header item into our .csv file.)
-    PackedStringArray header_row{
-        "Test_Number", "Test_Time", "System_Time_at_End",
-        "Prompt",      "Answer",    "Game_Mode",
-        "Num_1_Min",   "Num_1_Max", "Num_2_Min",
-        "Num_2_Max",   "Interval"};
+  // Checking whether this file already exists: (If not,
+  // we'll create it *and* store our header row as its first
+  // line.)
 
-    // Checking whether this file already exists: (If not,
-    // we'll create it *and* store our header row as its first
-    // line.)
+  if (FileAccess::file_exists(filename) == false) {
+    Ref<FileAccess> new_csv_file =
+        FileAccess::open(filename, FileAccess::WRITE);
+    new_csv_file->store_csv_line(header_row);
+    new_csv_file->close();
+  }
 
-    if (FileAccess::file_exists(filename) == false) {
-      Ref<FileAccess> new_csv_file =
-          FileAccess::open(filename, FileAccess::WRITE);
-      new_csv_file->store_csv_line(header_row);
-      new_csv_file->close();
-    }
+  // Now that we know this file exists, we can go ahead and
+  // open it for further edits:
+  results_csv_file = FileAccess::open(filename, FileAccess::READ_WRITE);
+  // read_write will allow us to add new data to a file without
+  // overwriting any of its previous data. See:
+  // https://docs.godotengine.org/en/stable/classes/class_fileaccess.html#class-fileaccess-method-seek-end
 
-    // Now that we know this file exists, we can go ahead and
-    // open it for further edits:
-    results_csv_file = FileAccess::open(filename, FileAccess::READ_WRITE);
-    // read_write will allow us to add new data to a file without
-    // overwriting any of its previous data. See:
-    // https://docs.godotengine.org/en/stable/classes/class_fileaccess.html#class-fileaccess-method-seek-end
+  // Checking the first line of this file to make sure that
+  // it has the exact same headers (in the exact same order)
+  // as header_row. (If it doesn't, we shouldn't save the results,
+  // since we'd then be storing invalid data for one or more
+  // header fields.)
 
-    // Checking the first line of this file to make sure that
-    // it has the exact same headers (in the exact same order)
-    // as header_row. (If it doesn't, we shouldn't save the results,
-    // since we'd then be storing invalid data for one or more
-    // header fields.)
+  PackedStringArray csv_first_row = results_csv_file->get_csv_line();
 
-    PackedStringArray csv_first_row = results_csv_file->get_csv_line();
-
+  if (print_extra_info == true) {
     UtilityFunctions::print("csv_first_row", csv_first_row);
     UtilityFunctions::print("csv_first_row equals header_row:",
                             csv_first_row == header_row);
+  }
 
-    if (csv_first_row != header_row)
+  if (csv_first_row != header_row)
 
-    {
-      update_notification_window("ERROR: headers within 0xflash_results.csv \
+  {
+    update_notification_window("ERROR: headers within 0xflash_results.csv \
 don't match those within the game's code. Correct the headers as needed, or \
 rename the current results file so that a new one can get created in  \
 its place.");
-      return;
-    }
-
-    // Moving to the end of the file so as not to overwrite any
-    // existing results:
-    results_csv_file->seek_end();
-
-    // To do: execute the following line if csv_first_row is empty
-    // (i.e. there's no header file already present).
-    // results_csv_file -> store_csv_line(header_row);
-
-    // Iterating through each set of results:
-    for (int i = 0; i < results_array.size(); i++)
-
-    {
-      // Adding the values for this row, field by field, to an
-      // array that will then get stored as another .csv line:
-
-      PackedStringArray data_row{};
-
-      for (int j = 0; j < header_row.size(); j++) {
-        data_row.append(results_array[i].get(header_row[j]));
-      }
-
-      // Now that all fields for the data row have been added,
-      // this field, too can get saved as a new row within our
-      // .csv file.
-
-      results_csv_file->store_csv_line(data_row);
-    }
-
-    results_csv_file->close();
-    update_notification_window("Finished saving output as: " + filename);
-    // On Linux Mint, these results should be available at:
-    // /home/>your_username>/.local/share/godot/app_userdata/0xflash .
-
-    // We'll clear out results_array here in order to prevent duplicate
-    // results from getting saved.
-
-    results_array.clear();
-    if (print_extra_info == true) {
-      UtilityFunctions::print("Cleared contents of result_array().");
-    }
+    return;
   }
+
+  // Moving to the end of the file so as not to overwrite any
+  // existing results:
+  results_csv_file->seek_end();
+
+  // To do: execute the following line if csv_first_row is empty
+  // (i.e. there's no header file already present).
+  // results_csv_file -> store_csv_line(header_row);
+
+  // Iterating through each set of results:
+  for (int i = 0; i < results_array.size(); i++)
+
+  {
+    // Adding the values for this row, field by field, to an
+    // array that will then get stored as another .csv line:
+
+    PackedStringArray data_row{};
+
+    for (int j = 0; j < header_row.size(); j++) {
+      data_row.append(results_array[i].get(header_row[j]));
+    }
+
+    // Now that all fields for the data row have been added,
+    // this field, too can get saved as a new row within our
+    // .csv file.
+
+    results_csv_file->store_csv_line(data_row);
+  }
+
+  results_csv_file->close();
+  update_notification_window("Finished saving output as: " + filename);
+  // On Linux Mint, these results should be available at:
+  // /home/>your_username>/.local/share/godot/app_userdata/0xflash .
+
+  // We'll clear out results_array here in order to prevent duplicate
+  // results from getting saved.
+
+  results_array.clear();
+  if (print_extra_info == true) {
+    UtilityFunctions::print("Cleared contents of result_array().");
+  }
+}
 
 void Main::_process(double delta) {
 
